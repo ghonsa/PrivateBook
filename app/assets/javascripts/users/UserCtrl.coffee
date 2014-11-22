@@ -6,12 +6,17 @@ class UserCtrl
         @users = []
         @getAllUsers()
         @isDebug = false
-        @isLoggedIn = false
+        @isLoggedIn = @UserService.isLoggedIn
+       
         
     logIn: () ->
         @$log.debug "logIn()"
         "Login"
-          
+      
+    getSession: () ->
+      @UserService.getSession()
+      
+            
     getAllUsers: () ->
         @$log.debug "getAllUsers()"
 
@@ -19,6 +24,7 @@ class UserCtrl
         .then(
             (data) =>
                 @$log.debug "Promise returned #{data.length} Users"
+                @$log.debug "#{data} "
                 @users = data
             ,
             (error) =>

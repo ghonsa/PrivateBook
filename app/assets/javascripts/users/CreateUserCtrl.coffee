@@ -8,6 +8,7 @@ class CreateUserCtrl
     createUser: () ->
         @$log.debug "createUser()"
         @user.active = true
+        @user.level = 2
         @UserService.createUser(@user)
         .then(
             (data) =>

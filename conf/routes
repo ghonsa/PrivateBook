@@ -9,11 +9,24 @@ GET     /                           @controllers.Application.index
 GET     /randomUUID                 @controllers.Application.randomUUID
 
 # User management API
-GET     /users                      @controllers.Users.findUsers
-POST    /user                       @controllers.Users.createUser
+GET     /users                      controllers.Users.findUsers
+POST    /user                       controllers.Users.createUser
 
 # Login management API
-GET     /users/login                @controllers.Users.findUsers
+POST    /login                      @controllers.Application.login
+GET     /getSessionData             @controllers.Application.getSessionData
+
+
+
+GET     /articles                   controllers.Articles.index
+GET     /articles/new               controllers.Articles.showCreationForm
+POST    /articles/new               controllers.Articles.create
+GET     /articles/:id               controllers.Articles.showEditForm(id)
+POST    /articles/:id               controllers.Articles.edit(id)
+DELETE  /articles/:id               controllers.Articles.delete(id)
+POST    /articles/:id/attachments   controllers.Articles.saveAttachment(id)
+GET     /attachments/:id            controllers.Articles.getAttachment(id)
+DELETE  /attachments/:id            controllers.Articles.removeAttachment(id)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

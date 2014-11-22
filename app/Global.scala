@@ -1,5 +1,8 @@
 import com.google.inject.{Guice, AbstractModule}
 import play.api.GlobalSettings
+
+import play.api._
+import play.api.mvc._
 import services.{SimpleUUIDGenerator, UUIDGenerator}
 
 /**
@@ -16,6 +19,11 @@ object Global extends GlobalSettings {
     }
   })
 
+  override def onStart(app: Application) {
+    controllers.Users.init;
+    
+   
+  }
   /**
    * Controllers must be resolved through the application context. There is a special method of GlobalSettings
    * that we can override to resolve a given controller. This resolution is required by the Play router.

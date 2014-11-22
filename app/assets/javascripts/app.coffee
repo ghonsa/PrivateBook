@@ -2,6 +2,7 @@
 dependencies = [
     'ngRoute',
     'ui.bootstrap',
+    'toaster',
     'PrivateBook.filters',
     'PrivateBook.services',
     'PrivateBook.controllers',
@@ -23,7 +24,7 @@ angular.module('PrivateBook.routeConfig', ['ngRoute'])
             })
             .when('/users/login',{
                 templateUrl: '/assets/partials/login.html'
-            })
+            })  
             .otherwise({redirectTo: '/'})
 
 @commonModule = angular.module('PrivateBook.common', [])
