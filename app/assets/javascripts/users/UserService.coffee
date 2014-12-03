@@ -8,7 +8,7 @@ class UserService
         @$log.debug "constructing UserService"
         @user = []
         @users = []
-        @LoggedIn = false
+        @LoggedIn = []
         @session = []
         @getSession()
     
@@ -48,7 +48,9 @@ class UserService
                 deferred.reject(data);
             )
         deferred.promise
-        
+     IsLoggedIn: () ->
+       @LoggedIn 
+       
      login: (username,passwd) ->
         @$log.debug "loginUser #{angular.toJson(username, true)}"
         @user = {username: username, passwd: passwd}
@@ -64,7 +66,26 @@ class UserService
                 for key, value of @session
                    @$log.info(" key  #{key}: #{value}");
                 @$log.info(" user  #{@user.userName}: logged in");  
-                @isLoggedIn = true
+                @LoggedIn = true
+            )
+        .error((data, status, headers) =>
+                @$log.error("Failed to login user - status #{status}")
+                deferred.reject(data);
+            )
+        deferred.promise
+     
+      logout: () ->
+        @$log.debug "logoutUser #{angular.toJson(@session, true)}"
+        deferred = @$q.defer()
+        @$http.post('/logout', angular.toJson(@session, true) )
+          .success((data, status, headers) =>
+                @$log.info("Successfully log out - status #{status}")
+                @toaster.pop('success', 'Logout Successful' );
+                deferred.resolve(data)
+                @session = []
+                @user = []
+                
+                @LoggedIn = false
             )
         .error((data, status, headers) =>
                 @$log.error("Failed to login user - status #{status}")
@@ -80,7 +101,7 @@ class UserService
                 @$log.info("Successfull getSession - status #{status}")
                 deferred.resolve(data)
                 @user = data
-                @isLoggedIn = true
+                @LoggedIn = true
             )
         .error((data, status, headers) =>
                 @$log.error("Failed to getSession- status #{status}")

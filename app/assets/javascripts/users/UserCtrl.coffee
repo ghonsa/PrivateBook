@@ -6,13 +6,16 @@ class UserCtrl
         @users = []
         @getAllUsers()
         @isDebug = false
-        @isLoggedIn = @UserService.isLoggedIn
+        
        
         
     logIn: () ->
         @$log.debug "logIn()"
         "Login"
-      
+    logOut:() ->
+      @UserService.logout() 
+    isLoggedIn: () ->
+       @UserService.IsLoggedIn() 
     getSession: () ->
       @UserService.getSession()
       

@@ -8,7 +8,8 @@ dependencies = [
     'PrivateBook.controllers',
     'PrivateBook.directives',
     'PrivateBook.common',
-    'PrivateBook.routeConfig'
+    'PrivateBook.routeConfig',
+    'audioPlayer-directive'
 ]
 
 app = angular.module('PrivateBook', dependencies)

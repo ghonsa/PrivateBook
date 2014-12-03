@@ -62,7 +62,7 @@ object Users extends Controller with MongoController {
      * (insert() takes a JsObject as parameter, or anything that can be
      * turned into a JsObject using a Writes.)
      */
-     logger.debug(s"Create Userr")
+     logger.debug(s"Create User")
    
      request.body.validate[User].map {
        user =>

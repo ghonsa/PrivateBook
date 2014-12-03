@@ -14,10 +14,11 @@ POST    /user                       controllers.Users.createUser
 
 # Login management API
 POST    /login                      @controllers.Application.login
+POST    /logout                     @controllers.Application.logout
 GET     /getSessionData             @controllers.Application.getSessionData
 
-
-
+GET     /mp3s                       controllers.mp3Files.findMp3s
+GET     /mp3/:name                  controllers.mp3Files.playMp3(name)
 GET     /articles                   controllers.Articles.index
 GET     /articles/new               controllers.Articles.showCreationForm
 POST    /articles/new               controllers.Articles.create

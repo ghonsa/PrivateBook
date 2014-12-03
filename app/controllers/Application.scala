@@ -66,6 +66,9 @@ class Application @Inject() (uuidGenerator: UUIDGenerator) extends Controller  {
     }
   }
   
+   def logout = Action(parse.json) { implicit request =>
+     Ok("Logged out").withNewSession
+   }
   def getSessionData = 
     UserAction {   implicit request =>  implicit requestor =>
       println("GSD")
