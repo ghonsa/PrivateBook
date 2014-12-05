@@ -1,5 +1,5 @@
 
-  <div class="row" ng-controller="UserCtrl as uc">
+  <div class="row" ng-controller="UserCtrl as uc" >
     <div class="container">
       <a ng-hide="uc.isLoggedIn()" ng-href="/#/users/login" class="btn btn-primary pull-right" id="btn_user_Login">Login</a>
       <a  ng-show="uc.isLoggedIn()" ng-click="uc.logOut()" class="btn btn-primary pull-right" id="btn_user_Login">Logout</a>
@@ -8,12 +8,20 @@
       <div ng-controller=" Mp3Ctrl as mp3c">
         <audio-player>   
         </audio-player>
-       
-        <button  ng-click="mp3c.prev()"> prev</button>
-        <button  ng-click="mp3c.next()">next </button> 
+        
+        <select 
+          ng-model="mp3c.artist"
+          ng-options=" artist for artist  in mp3c.artists " 
+          ng-selected="mp3c.artist == artist"
+          ng-change="mp3c.getMp3sByArtist(mp3c.artist)"
+        >
+        </select></br></br>
+        
+        <div class="mlist" style="max-height:400px;overflow-y:auto;width:100%;overflow-x:auto;">       
         <table id="mp3_list" class="table table-striped">
           <thead>
             <tr>
+              <th>ID</th>
               <th>SongName</th>
               <th>AlbumName</th>
               <th>Artist</th>
@@ -21,7 +29,8 @@
             </tr>
           </thead
           <tbody>
-            <tr ng-repeat="mp3 in mp3c.mp3s | filter:searchText">
+            <tr ng-repeat="mp3 in mp3c.mp3s | filter:searchText" id:{{ mp3.songTitle }}>
+              <td> {{ mp3._id.toString}}</td>
               <td> {{ mp3.songTitle }}</td>
               <td> {{ mp3.album }} </td>
               <td> {{ mp3.artist }}</td>
@@ -34,14 +43,28 @@
             </tr>
           </tbody>
         </table>
+        </div>
       </div>
     </div>
     <toaster-container toaster-options="{'time-out': 3000}"></toaster-container>
         
     <div class="container" ng-hide="uc.isLoggedIn()">
-      <img class="imgcentered"  src="/assets/images/flowr.jpg" alt="missing" align="middle" style="max-width:100%; max-height:100%" ng-click="uc.login()">  >
+      <img class="imgcentered"  src="/assets/images/DSCF0751.jpg" alt="missing" align="middle" style="max-width:100%; max-height:100%" ng-click="uc.login()">  >
     </div>
-        
+   </div>
+ <script>
+  $(document).on('change', 'select', function(e){        
+        var scope = angular.element($(this)).scope();
+        var val   = scope[$(this).attr('name')]; 
+         console.log('Selected: ' + val);     
+        $(this).val(val);
     
+});
 
-  </div>
+</script>
+   <script type="text/javascript">
+    function showIt(elID) {
+    var el = document.getElementById(elID);
+    el.scrollIntoView(true);
+    }
+   </script>

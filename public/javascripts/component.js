@@ -18,7 +18,7 @@ angular.module('audioPlayer-directive', [])
                 $scope.audio.addEventListener('play', function(){ $rootScope.$broadcast('audio.play', this); });
                 $scope.audio.addEventListener('pause', function(){ $rootScope.$broadcast('audio.pause', this); });
                 $scope.audio.addEventListener('timeupdate', function(){ $rootScope.$broadcast('audio.time', this); });
-                $scope.audio.addEventListener('ended', function(){ $rootScope.$broadcast('audio.ended', this); $scope.next(); });
+                $scope.audio.addEventListener('ended', function(){ $rootScope.$broadcast('audio.ended', this);  });
 
                 // set track & play it
                 $rootScope.$on('audio.set', function(r, file, info, currentNum, totalNum){
@@ -29,6 +29,11 @@ angular.module('audioPlayer-directive', [])
                     $scope.info = info;
                     $scope.currentNum = currentNum;
                     $scope.totalNum = totalNum;
+                   
+                });
+
+                $rootScope.$on('audio.play', function(){
+                  $scope.audio.play()
                 });
 
                 // update display of things - makes time-scrub work

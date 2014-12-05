@@ -54,6 +54,28 @@ object mp3Files extends Controller with MongoController {
    
   }
    
+  def getMp3byId(id:String):Option[Mp3Info] = {
+    println("Find Mp3file by ID")
+    val oid = new BSONObjectID(id)
+    val query = BSONDocument("_id" -> oid)
+    val cursor = collection.find( query).cursor[Mp3Info];  
+    val futureMp3List: Future[List[Mp3Info]] = cursor.collect[List]()
+    val what = futureMp3List.map { list =>
+        if(list.length != 1){
+          println("No file? ")
+          None
+        }
+        else {  
+          println("found file: " + list(0) ) 
+          Some(list(0))
+        }
+    }
+    println("getMp3 wait")
+    val rslt = Await.result( what,scala.concurrent.duration.Duration(1,SECONDS))
+    println("getMp3 wait Over!")
+    rslt
+   
+  } 
   def saveMp3(info:Mp3Info) {
    collection.insert(info).map {
            lastError =>
@@ -61,8 +83,9 @@ object mp3Files extends Controller with MongoController {
             
           }
   }
-  def playMp3 (file :String) = Action.async {
-     println("play")
+  def playMp3 (oid :String) = Action.async {
+     println("play " + oid)
+     val file = getMp3byId(oid).get.filePath
      val filePath = "E:\\mp3\\" + file.replaceAll("\"","")
      println("FP:" +filePath)
      try {
@@ -70,31 +93,71 @@ object mp3Files extends Controller with MongoController {
      }
      catch {
       
-       case _ => Future.successful(BadRequest("invalid file"))
+       case _ :Throwable => Future.successful(BadRequest("invalid file"))
     }
        
   }
+  import reactivemongo.core.commands.RawCommand
+  import play.modules.reactivemongo.json.BSONFormats._
   
-    def findMp3s = Action.async { implicit request =>
-    // get a sort document (see getSort method for more information)
-     println("Find Mp3")
+  def findArtists = Action.async  { implicit request =>
+    
+    println("Find Artist: ")
     val sort = BSONDocument()
+    
     // build a selection document with an empty query and a sort subdocument ('$orderby')
-    val query = BSONDocument(
-            "$query" -> BSONDocument())
+    val query =  BSONDocument()
+    val limit =  BSONDocument("artist" -> 1)
+    
+    val command = RawCommand(BSONDocument("distinct" -> "mp3Files", "key" -> "artist"))
+    val result = db.command(command)  // result is Future[BSONDocument]
+    
+    result.map { rst =>
+      println( "### rst: " +BSONDocument.pretty(rst))
+      val foo = Json.toJson(rst)
+      val arts :JsArray = (foo \ "values").as[JsArray]
+      val  artlst  =  arts.prepend( Json.toJson("all"))  //new JsArray((Json.toJson("all"))) + arts 
+      println("")
+      println("#->" + artlst.toString)
+      println("")
+       
+     Ok(artlst) 
+     
+    }
+    
+  } 
+  
+  def findMp3s = Action.async (parse.json) { implicit request =>
+    var artist :String = "" 
+    var album  : String = ""
+       
+    try { artist = (request.body.as[JsObject] \ "artist").as[String]} catch { case _ :Throwable => None }
+    try { album  =  (request.body.as[JsObject] \ "album").as[String]} catch { case _ :Throwable => None }
+        
+    println("Find Mp3: ")
+    
+    val sort = BSONDocument()
+    
+    // build a selection document with an empty query and a sort subdocument ('$orderby')
+    val query = BSONDocument("$query" -> {
+      if(artist.length>0 && artist != "all") BSONDocument("artist" ->artist)
+      else  BSONDocument()
+      }
+    )
+    
     val activeSort = request.queryString.get("sort").flatMap(_.headOption).getOrElse("none")
     // the cursor of documents
     val found = collection.find(query).cursor[Mp3Info]
     // build (asynchronously) a list containing all the users
       // gather all the JsObjects in a list
-    val futureUsersList: Future[List[Mp3Info]] = found.collect[List]()
+    val futureMp3List: Future[List[Mp3Info]] = found.collect[List]()
      
     // transform the list into a JsArray
-    val futurePersonsJsonArray: Future[JsArray] = futureUsersList.map { mp3s =>
+    val futureMp3sJsonArray: Future[JsArray] = futureMp3List.map { mp3s =>
       Json.arr(mp3s)
     }
     // everything's ok! Let's reply with the array
-    futurePersonsJsonArray.map {
+    futureMp3sJsonArray.map {
       mp3s =>
         Ok(mp3s(0))
     }

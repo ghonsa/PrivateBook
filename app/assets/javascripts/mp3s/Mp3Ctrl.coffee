@@ -10,8 +10,11 @@ class Mp3Ctrl
         @mp3s = []
         @mp3 = []
         @mp3Data = []
+        @artists = []
+        @artist = []
         @title = []
         @getAllMp3s()
+        @getAllArtists()
         @isDebug = false
         @init( this)
    
@@ -23,7 +26,7 @@ class Mp3Ctrl
      
        @$scope.$on 'audio.prev',() ->
           console.log('Prev ')
-          us.prev
+          us.prev()
 
        @$rootScope.$on 'audio.ended',() ->
           console.log('Ended')
@@ -37,6 +40,7 @@ class Mp3Ctrl
         @updateTrack();
       else
         @currentTrack= @mp3s.length-1;
+     
                  
     prev: () -> 
       console.log('Prev ' + @currentTrack)
@@ -47,28 +51,64 @@ class Mp3Ctrl
         @currentTrack = 0;
      
     updateTrack: () ->
-      @$log.debug "updateTrack()"     
-      @$rootScope.$broadcast('audio.set', 'mp3/'+ @mp3s[@currentTrack].filePath,  @mp3s[@currentTrack], @currentTrack, @mp3s.length);
-       
+      @$log.debug "updateTrack()" 
+      @$rootScope.$broadcast('audio.set', 'mp3/'+ @mp3s[@currentTrack]._id.$oid,  @mp3s[@currentTrack], @currentTrack, @mp3s.length);
+      @$rootScope.$broadcast('audio.play',this) 
+      for element in document.getElementsByTagName('*')
+        if element.className is @mp3s[@currentTrack].songTitle
+          element.scrollIntoView()
    
      getAllMp3s: () ->
        @$log.debug "getAllMp3s()"
        @Mp3Service.listMp3s()
         .then(
             (data) =>
-                @$log.debug "foo Promise returned #{data.length} Mp3s"
+                @$log.debug "Promise returned #{data.length} Mp3s"
                 @mp3s = angular.copy data
-               
+                index = 0
+                (mp.index=index++) for mp in @mp3s               
             ,
             (error) =>
                 @$log.error "Unable to get Mp3: #{error}"
             )
+        
+            
+     getMp3sByArtist: (artist) ->
+       @$log.debug "getMp3sByArtist(#{artist})"
+       @Mp3Service.listMp3sByArtist(artist)
+        .then(
+            (data) =>
+                @$log.debug "Promise returned #{data.length} Mp3s"
+                @mp3s = angular.copy data
+                index = 0
+                (mp.index=index++) for mp in @mp3s               
+            ,
+            (error) =>
+                @$log.error "Unable to get Mp3: #{error}"
+            )
+            
 
+     getAllArtists: () ->
+       @$log.debug "getAllArtists()"
+       @Mp3Service.listArtists()
+        .then(
+            (data) =>
+                @$log.debug "f Promise returned #{data.length} artists"
+                
+                @artists = angular.copy data
+                @$log.debug "Artists #{@artists} "              
+            ,
+            (error) =>
+                @$log.error "Unable to get artists: #{error}"
+            )
+            
      playMp3:(mp3info)  ->
        @$log.debug "playMp3s()" + mp3info
        @title = mp3info.filePath
        @mp3 = mp3info
-       @$rootScope.$broadcast('audio.set', 'mp3/'+ @mp3.filePath,  @mp3, 1, @mp3s.length);
+       @currentTrack= @mp3.index
+       @updateTrack()
+     
     
         
         

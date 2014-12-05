@@ -1,3 +1,8 @@
+
+<div class="form-group now-playing">
+    <p>Now Playing: {{currentNum}} <img width="30" height="30" src="{{info.image}}" /></p>
+    <p>{{info.artist}} - {{info.songTitle}}</p>
+</div>
 <div class="form-group">
     <label>volume: <input min="0" max="1" step="0.01" type="range" ng-model="audio.volume" /></label>
 </div>
@@ -15,7 +20,3 @@
     <label>time: <input min="0" max="{{audio.duration}}" step="0.01" type="range" ng-model="audio.currentTime" /></label>
 </div>
 
-<div class="form-group now-playing">
-    <p>Now Playing: <img width="30" height="30" src="{{info.image}}" /></p>
-    <p>{{info.artist}} - {{info.songTitle}}</p>
-</div>

@@ -1,6 +1,7 @@
 .nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
 
 body {
+background-image: url("/assets/images/DSCF0751.jpg");
     padding-top: 70px;
     padding-bottom: 30px;
     min-width: 240px;
