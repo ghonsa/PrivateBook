@@ -8,7 +8,7 @@
       <div ng-controller=" Mp3Ctrl as mp3c">
         <audio-player>   
         </audio-player>
-        
+        Artists:
         <select 
           ng-model="mp3c.artist"
           ng-options=" artist for artist  in mp3c.artists " 
@@ -16,7 +16,23 @@
           ng-change="mp3c.getMp3sByArtist(mp3c.artist)"
         >
         </select></br></br>
-        
+        Albums:
+        <select 
+          ng-model="mp3c.album"
+          ng-options=" album for album  in mp3c.albums " 
+          ng-selected="mp3c.album == album"
+          ng-change="mp3c.getMp3sByAlbum(mp3c.album)"
+        >
+        </select></br></br>
+         Genre: 
+         <select 
+          ng-model="mp3c.genre"
+          ng-options=" genre for genre  in mp3c.genres " 
+          ng-selected="mp3c.genre == genre"
+          ng-change="mp3c.getMp3sByGenre(mp3c.genre)"
+        >
+        </select></br></br>
+         Shuffle: <input type="checkbox" ng-model="mp3c.shuffle"> 
         <div class="mlist" style="max-height:400px;overflow-y:auto;width:100%;overflow-x:auto;">       
         <table id="mp3_list" class="table table-striped">
           <thead>

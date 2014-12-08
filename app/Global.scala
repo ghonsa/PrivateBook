@@ -21,7 +21,7 @@ object Global extends GlobalSettings {
 
   override def onStart(app: Application) {
     controllers.Users.init;
-    //ImportMp3.doImport("e:/mp3")
+    ImportMp3.doImport("e:/mp3")
    
   }
   /**

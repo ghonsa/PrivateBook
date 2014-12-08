@@ -12,7 +12,7 @@ class Mp3Service
     listArtists: () ->
         @$log.debug "listArtists()"
         deferred = @$q.defer()  
-                   
+             
         @$http.get("/artists")
         .success((data, status, headers) =>
                 @$log.info("Successfully listed Artists - status #{status}")
@@ -25,6 +25,40 @@ class Mp3Service
                 deferred.reject(data);
             )
         deferred.promise
+        
+    listAlbums: () ->
+        @$log.debug "listAlbums()"
+        deferred = @$q.defer()  
+             
+        @$http.get("/albums")
+        .success((data, status, headers) =>
+                @$log.info("Successfully listed Albums - status #{status}")
+              
+                deferred.resolve(data)
+            )
+        .error((data, status, headers) =>
+              
+                @$log.error("Failed to list Albums - status #{status}")
+                deferred.reject(data);
+            )
+        deferred.promise        
+        
+    listGenres: () ->
+        @$log.debug "listGenres()"
+        deferred = @$q.defer()  
+             
+        @$http.get("/genres")
+        .success((data, status, headers) =>
+                @$log.info("Successfully listed Genres - status #{status}")
+              
+                deferred.resolve(data)
+            )
+        .error((data, status, headers) =>
+              
+                @$log.error("Failed to list Albums - Genres #{status}")
+                deferred.reject(data);
+            )
+        deferred.promise                
              
     listMp3s: () ->
         @$log.debug "listMp3s()"
@@ -58,6 +92,39 @@ class Mp3Service
                 deferred.reject(data);
             )
         deferred.promise
+        
+        
+    listMp3sByAlbum: (album) ->
+        @$log.debug "listMp3sByAlbum()"
+        deferred = @$q.defer()  
+                   
+        @$http.post("/mp3s",{album: album})
+        .success((data, status, headers) =>
+                @$log.info("Successfully listed Mp3s - status #{status}")
+              
+                deferred.resolve(data)
+            )
+        .error((data, status, headers) =>
+                @$log.error("Failed to list Mp3s - status #{status}")
+                deferred.reject(data);
+            )
+        deferred.promise       
+
+    listMp3sByGenre: (genre) ->
+        @$log.debug "listMp3sByGenre()"
+        deferred = @$q.defer()  
+                   
+        @$http.post("/mp3s",{genre: genre})
+        .success((data, status, headers) =>
+                @$log.info("Successfully listed Mp3s - status #{status}")
+              
+                deferred.resolve(data)
+            )
+        .error((data, status, headers) =>
+                @$log.error("Failed to list Mp3s - status #{status}")
+                deferred.reject(data);
+            )
+        deferred.promise                
         
     playMp3:(mp3info)  ->
         @$log.debug "playMp3()" + mp3info.filePath 
