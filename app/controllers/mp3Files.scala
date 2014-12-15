@@ -198,10 +198,11 @@ object mp3Files extends Controller with MongoController {
     
     val activeSort = request.queryString.get("sort").flatMap(_.headOption).getOrElse("none")
     // the cursor of documents
+    //val found = collection.find(query).options(QueryOpts().batchSize(2000)).cursor[Mp3Info]
     val found = collection.find(query).cursor[Mp3Info]
     // build (asynchronously) a list containing all the users
       // gather all the JsObjects in a list
-    val futureMp3List: Future[List[Mp3Info]] = found.collect[List]()
+    val futureMp3List: Future[List[Mp3Info]] = found.collect[List]( )
      
     // transform the list into a JsArray
     val futureMp3sJsonArray: Future[JsArray] = futureMp3List.map { mp3s =>
@@ -212,13 +213,13 @@ object mp3Files extends Controller with MongoController {
               mpi.album,
               mpi.track,
               mpi.artist,
-              mpi.group,
-              mpi.groupLead,
-              mpi.interpeter,
+              "" , //mpi.group,
+              "", //mpi.groupLead,
+              "" , //mpi.interpeter,
               mpi.songTitle,
-              mpi.genre,
-              mpi.publisher,
-              mpi.composer,
+              "", //mpi.genre,
+              "" ,//mpi.publisher,
+              "", //mpi.composer,
               mpi.year)
         )
       Json.arr(ck)

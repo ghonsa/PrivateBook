@@ -5,9 +5,10 @@
       <a  ng-show="uc.isLoggedIn()" ng-click="uc.logOut()" class="btn btn-primary pull-right" id="btn_user_Login">Logout</a>
     </div>
     <div class="container" ng-Show="uc.isLoggedIn()">
-      <div ng-controller=" Mp3Ctrl as mp3c">
-        <audio-player>   
+       <audio-player>   
         </audio-player>
+      <div ng-controller=" Mp3Ctrl as mp3c">
+       
         Artists:
         <select 
           ng-model="mp3c.artist"
@@ -32,23 +33,23 @@
           ng-change="mp3c.getMp3sByGenre(mp3c.genre)"
         >
         </select></br></br>
-         Shuffle: <input type="checkbox" ng-model="mp3c.shuffle"> 
-        <div class="mlist" style="max-height:400px;overflow-y:auto;width:100%;overflow-x:auto;">       
+         Shuffle: <input type="checkbox" ng-model="mp3c.shuffle" ng-change="mp3c.doRandom()"> 
+        <div class="mlist" style="max-height:300px;overflow-y:auto;width:100%;overflow-x:auto;">       
         <table id="mp3_list" class="table table-striped">
           <thead>
             <tr>
               <th>ID</th>
               <th>SongName</th>
-              <th>AlbumName</th>
+              <!--th>AlbumName</th-->
               <th>Artist</th>
               <th>Play</th>
             </tr>
           </thead
           <tbody>
-            <tr ng-repeat="mp3 in mp3c.mp3s | filter:searchText" id:{{ mp3.songTitle }}>
-              <td> {{ mp3._id.toString}}</td>
+            <tr ng-repeat="mp3 in mp3c.mp3s " ; id = {{mp3.index}} >
+              <td> {{ mp3.index}}</td>
               <td> {{ mp3.songTitle }}</td>
-              <td> {{ mp3.album }} </td>
+              <!--td> {{ mp3.album }} </td-->
               <td> {{ mp3.artist }}</td>
               <td> <a ng-click="mp3c.playMp3(mp3);  " class="btn btn-primary pull-right" id="btn_mp3_Play">Play</a>  </td>
             </tr>
@@ -65,7 +66,7 @@
     <toaster-container toaster-options="{'time-out': 3000}"></toaster-container>
         
     <div class="container" ng-hide="uc.isLoggedIn()">
-      <img class="imgcentered"  src="/assets/images/DSCF0751.jpg" alt="missing" align="middle" style="max-width:100%; max-height:100%" ng-click="uc.login()">  >
+      <!--img class="imgcentered"  src="/assets/images/DSCF0751.jpg" alt="missing" align="middle" style="max-width:100%; max-height:100%" ng-click="uc.login()">  -->
     </div>
    </div>
  <script>

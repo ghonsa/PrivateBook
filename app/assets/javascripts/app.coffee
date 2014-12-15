@@ -14,8 +14,10 @@ dependencies = [
 
 app = angular.module('PrivateBook', dependencies)
 
+
 angular.module('PrivateBook.routeConfig', ['ngRoute'])
     .config ($routeProvider) ->
+         
         $routeProvider
             .when('/', {
                 templateUrl: '/assets/partials/view.html'

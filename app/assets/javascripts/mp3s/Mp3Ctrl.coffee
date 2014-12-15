@@ -3,7 +3,7 @@
 
 class Mp3Ctrl
  
-    constructor: (@$log, @$scope, @$rootScope, @Mp3Service) ->
+    constructor: (@$log, @$scope, @$rootScope, @Mp3Service, @$filter) ->
         @$log.debug "constructing Mp3Controller"
         @currentTrack = 0
         @currentIndex = 0
@@ -19,6 +19,8 @@ class Mp3Ctrl
         @genres = []
         @genre = []
         @title = []
+        @orderByStr = 'index'
+        @orderBy = $filter('orderBy');
         @getAllMp3s()
         @getAllArtists()
         @getAllAlbums()
@@ -26,7 +28,7 @@ class Mp3Ctrl
         @isDebug = false
         @shuffle = false
         @init( this)
-   
+       
  
     init: (us) ->
       
@@ -44,7 +46,8 @@ class Mp3Ctrl
 
                  
     next: () ->        
-      console.log('Next ' + @currentTrack )
+      console.log('Next IDX ' + @currentIndex  + ' curr: ' + @playlst[@currentIndex] + ' next: ' +  @playlst[@currentIndex+1] + ' second:' +  @playlst[@currentIndex+2])
+      console.log('Next Song ' + @mp3s[@playlst[@currentIndex+1]].songTitle + ' id: ' +   @mp3s[@playlst[@currentIndex+1]].index )
       if(@shuffle== true)
          @currentIndex++
          if (@currentIndex <@mp3s.length)
@@ -63,7 +66,7 @@ class Mp3Ctrl
     prev: () -> 
       console.log('Prev ' + @currentTrack)
       if(@shuffle== true)
-        @currentIndex++
+        @currentIndex--
         if (@currentIndex >= 0)
           @currentTrack = @playlst[@currentIndex]
           @updateTrack();
@@ -78,13 +81,13 @@ class Mp3Ctrl
   
      
     updateTrack: () ->
-      @$log.debug "updateTrack()" 
+      @$log.debug "updateTrack() #{@mp3s[@currentTrack].songTitle} ShuffleID: #{@mp3s[@currentTrack].shuffleId}  index: #{@mp3s[@currentTrack].index}   #{@playlst[@currentIndex]}" 
       @$rootScope.$broadcast('audio.set', 'mp3/'+ @mp3s[@currentTrack]._id.$oid,  @mp3s[@currentTrack], @currentTrack, @mp3s.length);
       @$rootScope.$broadcast('audio.play',this) 
-      for element in document.getElementsByTagName('*')
-        if element.className is @mp3s[@currentTrack].songTitle
-          element.scrollIntoView()
-   
+      document.getElementById(@currentTrack).scrollIntoView()
+  
+       
+           
      getAllMp3s: () ->
        @$log.debug "getAllMp3s()"
        @Mp3Service.listMp3s()
@@ -92,10 +95,11 @@ class Mp3Ctrl
             (data) =>
                 @$log.debug "Promise returned #{data.length} Mp3s"
                 @mp3s = angular.copy data
+                @$rootScope.$broadcast('audio.set', 'mp3/'+ @mp3s[@currentTrack]._id.$oid,  @mp3s[@currentTrack], @currentTrack, @mp3s.length);
                 @currentIndex = 0
-                @randomize(@mp3s.length)
+                @randomize()
                 index = 0
-                (mp.index=index++) for mp in @mp3s               
+                ( mp.index=index;  index++;) for mp in @mp3s                
             ,
             (error) =>
                 @$log.error "Unable to get Mp3: #{error}"
@@ -109,10 +113,11 @@ class Mp3Ctrl
             (data) =>
                 @$log.debug "Promise returned #{data.length} Mp3s"
                 @mp3s = angular.copy data
+                @$rootScope.$broadcast('audio.set', 'mp3/'+ @mp3s[@currentTrack]._id.$oid,  @mp3s[@currentTrack], @currentTrack, @mp3s.length);
                 @currentIndex = 0
-                @randomize(@mp3s.length)
+                @randomize()
                 index = 0
-                (mp.index=index++) for mp in @mp3s               
+                (mp.index=index++; mp.shuffleId = @playlst[index]) for mp in @mp3s                 
             ,
             (error) =>
                 @$log.error "Unable to get Mp3: #{error}"
@@ -125,10 +130,11 @@ class Mp3Ctrl
             (data) =>
                 @$log.debug "Promise returned #{data.length} Mp3s"
                 @mp3s = angular.copy data
+                @$rootScope.$broadcast('audio.set', 'mp3/'+ @mp3s[@currentTrack]._id.$oid,  @mp3s[@currentTrack], @currentTrack, @mp3s.length);
                 @currentIndex = 0
-                @randomize(@mp3s.length)
+                @randomize()
                 index = 0
-                (mp.index=index++) for mp in @mp3s               
+                (mp.index=index++; mp.shuffleId = @playlst[index]) for mp in @mp3s               
             ,
             (error) =>
                 @$log.error "Unable to get Mp3: #{error}"
@@ -141,10 +147,11 @@ class Mp3Ctrl
             (data) =>
                 @$log.debug "Promise returned #{data.length} Mp3s"
                 @mp3s = angular.copy data
+                @$rootScope.$broadcast('audio.set', 'mp3/'+ @mp3s[@currentTrack]._id.$oid,  @mp3s[@currentTrack], @currentTrack, @mp3s.length);
                 @currentIndex = 0
-                @randomize(@mp3s.length)
+                @randomize()
                 index = 0
-                (mp.index=index++) for mp in @mp3s               
+                (mp.index=index++; mp.shuffleId = @playlst[index]) for mp in @mp3s               
             ,
             (error) =>
                 @$log.error "Unable to get Mp3: #{error}"
@@ -200,17 +207,31 @@ class Mp3Ctrl
        @currentTrack= @mp3.index
        @updateTrack()
      
-     randomize:(count) ->
+     order:(predicate,reverse) ->
+       @mp3s = @orderBy(@mp3s,predicate,reverse)
+     
+     doRandom:() ->
+       if(@shuffle)
+         this.randomize()
+         this.order('shuffleId',false)
+       else
+           this.order('index',false)
+       
+         
+     randomize:() ->
+       count = @mp3s.length
        @$log.debug " randomize(#{count})" 
        @playlst = []
        for i in [0..count] by 1
          loop
-           @tv = Math.floor((Math.random()*count)+1)
+           @tv = Math.floor((Math.random()*count))
            
            break if( @tv not in @playlst)
            break if (i == count)
+         @$log.debug " rnd# (#{@tv} #{@mp3s[@tv].songTitle})"   
+         @mp3s[@tv].shuffleId = i  
          @playlst.push(@tv)
-         @$log.debug("ct: #{@playlst[i]} " )  
+        
       
      controllersModule.controller('Mp3Ctrl', Mp3Ctrl)
      
