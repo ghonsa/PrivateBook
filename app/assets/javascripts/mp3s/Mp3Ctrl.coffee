@@ -207,15 +207,15 @@ class Mp3Ctrl
        @currentTrack= @mp3.index
        @updateTrack()
      
-     order:(predicate,reverse) ->
-       @mp3s = @orderBy(@mp3s,predicate,reverse)
+     #order:(predicate,reverse) ->
+     #  @mp3s = @orderBy(@mp3s,predicate,reverse)
      
      doRandom:() ->
        if(@shuffle)
          this.randomize()
-         this.order('shuffleId',false)
+         @orderByStr = 'shuffleId'
        else
-           this.order('index',false)
+         @orderByStr = 'index'
        
          
      randomize:() ->
@@ -228,7 +228,7 @@ class Mp3Ctrl
            
            break if( @tv not in @playlst)
            break if (i == count)
-         @$log.debug " rnd# (#{@tv} #{@mp3s[@tv].songTitle})"   
+         #@$log.debug " rnd# (#{@tv} #{@mp3s[@tv].songTitle})"   
          @mp3s[@tv].shuffleId = i  
          @playlst.push(@tv)
         

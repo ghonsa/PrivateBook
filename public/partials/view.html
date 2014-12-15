@@ -46,7 +46,7 @@
             </tr>
           </thead
           <tbody>
-            <tr ng-repeat="mp3 in mp3c.mp3s " ; id = {{mp3.index}} >
+            <tr ng-repeat="mp3 in mp3c.mp3s | orderBy: mp3c.orderByStr " ; id = {{mp3.index}} >
               <td> {{ mp3.index}}</td>
               <td> {{ mp3.songTitle }}</td>
               <!--td> {{ mp3.album }} </td-->
