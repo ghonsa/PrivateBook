@@ -13,13 +13,7 @@ case class User( _id: BSONObjectID,
  
                  
 object User {
-  
- // def apply(id:Long) :User = {
- //   Users.getUser(id).get
- //  }
-  
-  //implicit val userImplicitWrites = Json.writes[User]
-  //implicit val userReads = Json.reads[User]
+ 
  
   implicit object UserBSReader extends BSONDocumentReader[User] {
     def read(doc: BSONDocument): User = {
@@ -46,11 +40,3 @@ object User {
   } 
                 
 }               
-object JsonFormats {
-  import play.api.libs.json.Json
-
-  // Generates Writes and Reads for Feed and User thanks to Json Macros
-  implicit val userFormat = Json.format[User]
-  implicit val mp3InfoFormat = Json.format[Mp3Info]
-  implicit val artistFormat = Json.format[Artist]
-}

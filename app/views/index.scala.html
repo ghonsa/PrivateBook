@@ -9,12 +9,12 @@
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
     <link rel="stylesheet" media='screen' href='@routes.Assets.at("stylesheets/main.css")'>
     <link href="http://cdnjs.cloudflare.com/ajax/libs/angularjs-toaster/0.4.4/toaster.css" rel="stylesheet" />
-    
+    <link rel="stylesheet" type="text/css" href='@routes.Assets.at("stylesheets/ng-grid.css")' />
 </head>
 <body>
-<div ng-view>
+<div class="container" ng-view>
      <toaster-container toaster-options="{'time-out': 3000}"></toaster-container>
- </div> 
+</div> 
 <div class="container-fluid col-md-10 col-md-offset-1">
     <!-- Fixed navbar -->
     <header>
@@ -37,7 +37,7 @@
         <footer>
             <hr/>
             <div>
-                <span>&copy; PrivateBook 2014</span>
+                <span>&copy; PrivateBook 2015</span>
                 <span class="pull-right">version : <span app-version></span></span>
             </div>
         </footer>
@@ -49,14 +49,16 @@
    
 <script src='//ajax.googleapis.com/ajax/libs/angularjs/1.2.13/angular.js' type="text/javascript"></script>
 <script src='//ajax.googleapis.com/ajax/libs/angularjs/1.2.13/angular-route.js' type="text/javascript"></script>
+<script src='//ajax.googleapis.com/ajax/libs/angularjs/1.2.13/angular-animate.js' type="text/javascript"></script>
 
 
 <script src='@routes.Assets.at("javascripts/vendor/ui-bootstrap-tpls-0.10.0.js")' type="text/javascript"></script>
-<script src='@routes.Assets.at("javascripts/angular-animate.min.js")' type="text/javascript"></script>
 <script src='@routes.Assets.at("javascripts/toaster.js")' type="text/javascript"></script>
 <script src='@routes.Assets.at("javascripts/main.js")' type="text/javascript"></script>
 <script src='@routes.Assets.at("javascripts/component.js")' type="text/javascript"></script>
 <script src='@routes.Assets.at("javascripts/MusicCtrl.js")' type="text/javascript"></script>
+<script src='@routes.Assets.at("javascripts/jQuery.js")' type="text/javascript"></script>
+<script src='@routes.Assets.at("javascripts/ng-grid.js")' type="text/javascript"></script>
 
 <!-- Coffee script compilled resources-->
 <script src='@routes.Assets.at("javascripts/app.js")' type="text/javascript"></script>
@@ -69,6 +71,7 @@
 <script src='@routes.Assets.at("javascripts/users/LoginUserCtrl.js")' type="text/javascript"></script>
 <script src='@routes.Assets.at("javascripts/mp3s/Mp3Service.js")' type="text/javascript"></script>
 <script src='@routes.Assets.at("javascripts/mp3s/Mp3Ctrl.js")' type="text/javascript"></script>
-
+<script src='@routes.Assets.at("javascripts/JPGs/JPGService.js")' type="text/javascript"></script>
+<script src='@routes.Assets.at("javascripts/JPGCtrl.js")' type="text/javascript"></script>
 
 </html>

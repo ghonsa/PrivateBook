@@ -6,8 +6,8 @@ class UserCtrl
         @users = []
         @getAllUsers()
         @isDebug = false
-        
-       
+        @viewMP3s = true
+        @viewImages = false
         
     logIn: () ->
         @$log.debug "logIn()"
@@ -18,8 +18,21 @@ class UserCtrl
        @UserService.IsLoggedIn() 
     getSession: () ->
       @UserService.getSession()
+     
+    MP3sVisible:() ->
+      @UserService.IsLoggedIn() &  @viewMP3s
       
-            
+    imagesVisible:() ->
+     @UserService.IsLoggedIn() &  @viewImages
+      
+    showImages: () ->
+      @viewMP3s = false  
+      @viewImages = true
+     
+    showMP3s: () ->
+      @viewMP3s = true  
+      @viewImages = false
+              
     getAllUsers: () ->
         @$log.debug "getAllUsers()"
 

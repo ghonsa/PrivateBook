@@ -168,7 +168,7 @@ object Users extends Controller with MongoController {
     // build (asynchronously) a list containing all the users
       // gather all the JsObjects in a list
     val futureUsersList: Future[List[User]] = found.collect[List]()
-     
+         
     // transform the list into a JsArray
     val futurePersonsJsonArray: Future[JsArray] = futureUsersList.map { users =>
       Json.arr(users)

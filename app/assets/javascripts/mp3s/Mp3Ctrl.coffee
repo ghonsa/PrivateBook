@@ -3,7 +3,7 @@
 
 class Mp3Ctrl
  
-    constructor: (@$log, @$scope, @$rootScope, @Mp3Service, @$filter) ->
+    constructor: (@$log, @$scope, @$rootScope, @Mp3Service, @$filter,@$window) ->
         @$log.debug "constructing Mp3Controller"
         @currentTrack = 0
         @currentIndex = 0
@@ -29,25 +29,44 @@ class Mp3Ctrl
         @shuffle = false
         @init( this)
        
+  		
+   
  
     init: (us) ->
-      
+       
        @$scope.$on 'audio.next',() ->
-         console.log('Next')
          us.next() 
      
        @$scope.$on 'audio.prev',() ->
-          console.log('Prev ')
-          us.prev()
+         us.prev()
 
        @$rootScope.$on 'audio.ended',() ->
-          console.log('Ended')
-          us.next() 
-
+         us.next() 
+       
+       @$scope.$watch   -> 
+         console.log('Watcher')
+       
+ 
+    @gridOptions = {
+      data:                'this.mp3s',
+      multiSelect:         false,  
+      enableCellSelection: false,
+      enableRowSelection:  true,
+      rowTemplate:         '<div ng-click="onClickOrderRow(row)" ng-style="{ \'cursor\': row.cursor }" ng-repeat="col in renderedColumns" ng-class="col.colIndex()" class="ngCell {{col.cellClass}}"><div class="ngVerticalBar" ng-style="{height: rowHeight}" ng-class="{ ngVerticalBarVisible: !$last }">&nbsp;</div><div ng-cell></div></div>',
+      columnDefs: [
+        { field: 'songTitle',    displayName: 'Song Title',           width: '50%' },
+        { field: 'artist',       displayName: 'Artist',       width: '50%' }
+      ],
+    }
+  
+    onClickOrderRow:(row) ->
+      console.log(row.Entity.toString)
+      
+    
                  
     next: () ->        
-      console.log('Next IDX ' + @currentIndex  + ' curr: ' + @playlst[@currentIndex] + ' next: ' +  @playlst[@currentIndex+1] + ' second:' +  @playlst[@currentIndex+2])
-      console.log('Next Song ' + @mp3s[@playlst[@currentIndex+1]].songTitle + ' id: ' +   @mp3s[@playlst[@currentIndex+1]].index )
+      #console.log('Next IDX ' + @currentIndex  + ' curr: ' + @playlst[@currentIndex] + ' next: ' +  @playlst[@currentIndex+1] + ' second:' +  @playlst[@currentIndex+2])
+      #console.log('Next Song ' + @mp3s[@playlst[@currentIndex+1]].songTitle + ' id: ' +   @mp3s[@playlst[@currentIndex+1]].index )
       if(@shuffle== true)
          @currentIndex++
          if (@currentIndex <@mp3s.length)
@@ -64,7 +83,6 @@ class Mp3Ctrl
      
                  
     prev: () -> 
-      console.log('Prev ' + @currentTrack)
       if(@shuffle== true)
         @currentIndex--
         if (@currentIndex >= 0)
@@ -97,7 +115,7 @@ class Mp3Ctrl
                 @mp3s = angular.copy data
                 @$rootScope.$broadcast('audio.set', 'mp3/'+ @mp3s[@currentTrack]._id.$oid,  @mp3s[@currentTrack], @currentTrack, @mp3s.length);
                 @currentIndex = 0
-                @randomize()
+                #@randomize()
                 index = 0
                 ( mp.index=index;  index++;) for mp in @mp3s                
             ,
@@ -115,7 +133,7 @@ class Mp3Ctrl
                 @mp3s = angular.copy data
                 @$rootScope.$broadcast('audio.set', 'mp3/'+ @mp3s[@currentTrack]._id.$oid,  @mp3s[@currentTrack], @currentTrack, @mp3s.length);
                 @currentIndex = 0
-                @randomize()
+                #@randomize()
                 index = 0
                 (mp.index=index++; mp.shuffleId = @playlst[index]) for mp in @mp3s                 
             ,
@@ -132,7 +150,7 @@ class Mp3Ctrl
                 @mp3s = angular.copy data
                 @$rootScope.$broadcast('audio.set', 'mp3/'+ @mp3s[@currentTrack]._id.$oid,  @mp3s[@currentTrack], @currentTrack, @mp3s.length);
                 @currentIndex = 0
-                @randomize()
+                #@randomize()
                 index = 0
                 (mp.index=index++; mp.shuffleId = @playlst[index]) for mp in @mp3s               
             ,
@@ -149,7 +167,7 @@ class Mp3Ctrl
                 @mp3s = angular.copy data
                 @$rootScope.$broadcast('audio.set', 'mp3/'+ @mp3s[@currentTrack]._id.$oid,  @mp3s[@currentTrack], @currentTrack, @mp3s.length);
                 @currentIndex = 0
-                @randomize()
+                #@randomize()
                 index = 0
                 (mp.index=index++; mp.shuffleId = @playlst[index]) for mp in @mp3s               
             ,
@@ -232,6 +250,7 @@ class Mp3Ctrl
          @mp3s[@tv].shuffleId = i  
          @playlst.push(@tv)
         
+    
       
      controllersModule.controller('Mp3Ctrl', Mp3Ctrl)
      

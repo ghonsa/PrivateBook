@@ -11,7 +11,9 @@ object ApplicationBuild extends Build {
     "org.reactivemongo" %% "reactivemongo" % "0.10.0",
     "org.reactivemongo" %% "play2-reactivemongo" % "0.10.2",
     "org.mindrot" % "jbcrypt" % "0.3m",
-    "org.mockito" % "mockito-core" % "1.9.5" % "test"
+    "org.mockito" % "mockito-core" % "1.9.5" % "test",
+    "com.amazonaws" % "aws-java-sdk" % "1.9.13",
+    "com.github.nscala-time" %% "nscala-time" % "1.8.0"
   )
 
   val main = play.Project(appName, appVersion, appDependencies).settings(

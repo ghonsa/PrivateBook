@@ -1,0 +1,7 @@
+PrivateBook:
+
+1) Start Mongo : F:\"MongoDB 2.6 Standard"\bin\mongod 
+2) Start Web cd F:\NewWork\PrivateBook   
+          "play run"
+          
+3) connect Browser http://localhost:9000/ 

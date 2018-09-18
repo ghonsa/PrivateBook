@@ -5,6 +5,7 @@ import play.api._
 import play.api.mvc._
 import services.{SimpleUUIDGenerator, UUIDGenerator}
 import ImportMp3._
+import ImportJpg._
 /**
  * Set up the Guice injector and provide the mechanism for return objects from the dependency graph.
  */
@@ -22,6 +23,7 @@ object Global extends GlobalSettings {
   override def onStart(app: Application) {
     controllers.Users.init;
     ImportMp3.doImport("e:/mp3")
+    ImportJpg.doImport("e:/pics")
    
   }
   /**

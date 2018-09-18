@@ -1,12 +1,22 @@
 .nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
 
 body {
-background-image: url("/assets/images/DSCF0751.jpg");
+
     padding-top: 70px;
     padding-bottom: 30px;
     min-width: 240px;
 }
-
+/* ~~~ BEGIN: Workaround for resize/layout issues in ng-grid. */
+/*            See: https://github.com/angular-ui/ng-grid/issues/80 */
+/*                 and the comment by eitankw on that page. */
+.ngViewport.ng-scope{
+  height: auto !important;
+  overflow-y: hidden;
+}
+.ngTopPanel.ng-scope, .ngHeaderContainer{
+  width: auto !important;
+}
+/* ~~~ END: Workaround for resize/layout issues in ng-grid. */
 audio-player .paused .play-text,
 audio-player .pause-text {
     display:inline-block;
@@ -22,4 +32,8 @@ audio-player * {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+}
+.gridStyle {
+  border: 1px solid rgb(212,212,212);
+  overflow: auto;
 }

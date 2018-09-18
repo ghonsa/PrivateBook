@@ -1,6 +1,10 @@
 
 import xml._
 import java.io._
+
+
+import com.amazonaws.AmazonWebServiceClient._
+
 import scala.xml.XML
 import scala.io._
 import scala.util.control.Breaks._
@@ -9,25 +13,23 @@ import _root_.scala.xml.{NodeSeq, Text, Group}
 import _root_.java.util.Locale
 import controllers.mp3Files._
 import models.Mp3Info
+import models.Album
 import reactivemongo.bson._
 
 
 
 /*
-*    ImportDocs - tools for importing documents and adding to projects
+*    ImportMp3 - tools for importing documents and adding to projects
 *    
 *    	doImport(folder path) - Recursively runs through all files in the folder structure 
-*                               and adds to the Curation document database if not already present.
-*                               If the file is xml it will attempt to parse using the Pub Med format
-*                               and populate the the CDocumentId, description and abstract (if present) 
-*                               Defaults to setting the name and file path. 
+*                               and adds to the MP3 database if not already present.
 *                               
-*       mapToProject(ProjectName, directory path) - Adds all files in the specified directory to a project. 
-*                               Create the project if it doesn't exist.
+*                               
+
 */
 
 object ImportMp3 {
-  //val  localDir =    Props.get("db.docs")
+  
   
   //Recursively builds a list of all files files in the parameter folder
   private def getRecursiveListOfFiles(dir: java.io.File): Array[java.io.File] = { val these = dir.listFiles; these ++ these.filter(_.isDirectory).flatMap(   getRecursiveListOfFiles)}
@@ -172,7 +174,7 @@ object ImportMp3 {
   }
                    
   // Do the work
-  def doImport(filepath:String) {
+  def doImport(filepath:String) = {
     val srcdir :File = new File(filepath)
    
     val logDups = new PrintWriter( new File(filepath + "/dups.log") , "UTF-8")
@@ -220,13 +222,14 @@ object ImportMp3 {
             val headerTag:String  = "" + header(0) + header(1) + header(2)
             val version :String = "ID3v2." + header(3)+ "." + header(4)
             val headerLen: Array[Byte] = Array(header(5).toByte, header(6).toByte,header(7).toByte, header(8).toByte, header(9).toByte)
-            //println ( "HT:" +headerTag )
+            
+            //Read the header tag info 
             breakable { 
               while (idx <36) {
                 var foo = reader.read(tagg,0,4)
                 var tTag:String  = "" +  tagg(0) + tagg(1) + tagg(2) + tagg(3)
                 tTag = tTag.trim 
-                //println("Tag:" +tTag)
+               
             
                 if(tTag.length >0){
                   reader.read(tlen,0,4)
@@ -266,6 +269,13 @@ object ImportMp3 {
                 idx = idx + 1   
               }
             }
+            // look for album
+            val albm = controllers.Albums.getAlbum(album)
+            if(albm.isEmpty){
+              val albm = new Album(BSONObjectID.generate,album,"")
+              // lookup the album art..
+            }
+            // look for song
             val ckfile = controllers.mp3Files.getMp3(album,songTitle,artist);
             if(ckfile.isEmpty) {
               val mpInfo = new Mp3Info(BSONObjectID.generate,filePath,album,track,artist,group,groupLead,interpeter,songTitle,genre,publisher,composer,year)

@@ -41,7 +41,7 @@ object Mp3Info {
     }
   }
 
-  implicit object mp3InfBSWriter extends BSONDocumentWriter[Mp3Info] {
+  implicit object mp3InfoBSWriter extends BSONDocumentWriter[Mp3Info] {
     def write(mp3inf: Mp3Info): BSONDocument =
       BSONDocument(
       "_id" -> mp3inf._id,
